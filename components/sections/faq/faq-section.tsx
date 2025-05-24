@@ -1,10 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ExpandablePanel } from "./expandable-panel";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const faqs = [
   {
@@ -80,6 +87,8 @@ const categories = [
 ];
 
 export function FAQSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -111,116 +120,63 @@ export function FAQSection() {
   const suggestions = getSuggestions();
 
   return (
-    <section id="faq" className="bg-muted/30 py-24">
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
+          ref={ref}
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 text-center"
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="mt-4 text-xl text-muted-foreground">
-            Find answers to common questions about our services and facilities
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Find answers to common questions about our classes, policies, and facilities.
           </p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mx-auto mb-10 max-w-2xl"
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="max-w-3xl mx-auto"
         >
-          <div className="relative">
-            <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search for questions..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            
-            {/* Search suggestions */}
-            {suggestions.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full rounded-md border bg-card shadow-lg">
-                <ul className="py-1">
-                  {suggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      className="cursor-pointer px-4 py-2 text-sm hover:bg-muted"
-                      onClick={() => setSearchQuery(suggestion)}
-                    >
-                      {suggestion}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`rounded-full px-4 py-1 text-sm font-medium transition-colors ${
-                  selectedCategory === category.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                }`}
+          <Accordion type="single" collapsible className="w-full">
+            {filteredFaqs.map((faq, index) => (
+              <AccordionItem
+                key={faq.id}
+                value={`item-${index}`}
+                className="border-b border-border/40"
               >
-                {category.name}
-              </button>
+                <AccordionTrigger className="text-left text-lg font-medium py-4 hover:no-underline">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </motion.div>
 
-        <div className="mx-auto max-w-3xl space-y-4">
-          {filteredFaqs.length > 0 ? (
-            filteredFaqs.map((faq, index) => (
               <motion.div
-                key={faq.id}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
-              >
-                <ExpandablePanel
-                  question={faq.question}
-                  answer={faq.answer}
-                  relatedQuestions={faq.relatedQuestions.map((id) => {
-                    const relatedFaq = getFaqById(id);
-                    return relatedFaq
-                      ? {
-                          id,
-                          question: relatedFaq.question,
-                        }
-                      : null;
-                  }).filter(Boolean) as { id: number; question: string }[]}
-                  onRelatedQuestionClick={(id) => {
-                    const faq = getFaqById(id);
-                    if (faq) {
-                      setSelectedCategory(faq.category);
-                      setSearchQuery(faq.question);
-                    }
-                  }}
-                />
-              </motion.div>
-            ))
-          ) : (
-            <div className="rounded-lg border bg-card p-6 text-center">
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center mt-12"
+        >
               <p className="text-muted-foreground">
-                No questions found matching your search. Try a different query or
-                category.
+            Still have questions?{" "}
+            <a
+              href="#contact"
+              className="text-primary hover:underline font-medium"
+            >
+              Contact us
+            </a>
               </p>
-            </div>
-          )}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

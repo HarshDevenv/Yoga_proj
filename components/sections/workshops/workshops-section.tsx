@@ -2,129 +2,173 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Users, ArrowRight } from "lucide-react";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
+import { Calendar, MapPin, Clock, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const workshops = [
   {
-    id: 1,
-    title: "Advanced Asana Workshop",
-    description: "Master complex poses with proper alignment and technique",
-    date: "April 15, 2024",
+    title: "Weekend Yoga Retreat",
+    description: "Immerse yourself in a transformative weekend of yoga, meditation, and self-discovery.",
+    date: "June 15-17, 2024",
+    time: "9:00 AM - 5:00 PM",
+    location: "Mountain View Resort",
+    capacity: "20 participants",
+    price: "$299",
+    image: "https://images.pexels.com/photos/3822629/pexels-photo-3822629.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: [
+      "Daily yoga sessions",
+      "Guided meditation",
+      "Healthy meals included",
+      "Nature walks",
+      "Workshop materials"
+    ],
+    featured: true
+  },
+  {
+    title: "Advanced Inversion Workshop",
+    description: "Master the art of inversions with expert guidance and personalized attention.",
+    date: "May 25, 2024",
+    time: "2:00 PM - 5:00 PM",
     location: "Main Studio",
-    spots: "8 spots left",
-    image: "https://images.pexels.com/photos/8436981/pexels-photo-8436981.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    tags: ["Advanced", "Technique", "Alignment"],
-    featured: true,
+    capacity: "12 participants",
+    price: "$89",
+    image: "https://images.pexels.com/photos/3822630/pexels-photo-3822630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: [
+      "Handstand techniques",
+      "Shoulder stand variations",
+      "Safety practices",
+      "Progression strategies",
+      "Personal feedback"
+    ],
+    featured: false
   },
   {
-    id: 2,
-    title: "Mindfulness & Meditation",
-    description: "Learn essential meditation techniques for daily practice",
-    date: "April 22, 2024",
-    location: "Zen Room",
-    spots: "12 spots left",
-    image: "https://images.pexels.com/photos/8436595/pexels-photo-8436595.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    tags: ["Meditation", "Mindfulness", "Beginner"],
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Yoga Philosophy Series",
-    description: "Explore the ancient wisdom and philosophy of yoga",
-    date: "May 1, 2024",
-    location: "Library",
-    spots: "15 spots left",
-    image: "https://images.pexels.com/photos/8436781/pexels-photo-8436781.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    tags: ["Philosophy", "History", "Theory"],
-    featured: false,
+    title: "Meditation Masterclass",
+    description: "Deep dive into advanced meditation techniques and mindfulness practices.",
+    date: "June 8, 2024",
+    time: "10:00 AM - 1:00 PM",
+    location: "Zen Garden",
+    capacity: "15 participants",
+    price: "$75",
+    image: "https://images.pexels.com/photos/3822631/pexels-photo-3822631.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    features: [
+      "Breathing techniques",
+      "Mindfulness practices",
+      "Stress reduction",
+      "Guided sessions",
+      "Take-home resources"
+    ],
+    featured: false
   }
 ];
 
 export function WorkshopsSection() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   return (
-    <section className="bg-background py-24">
+    <section className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
+          ref={ref}
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
             Upcoming Workshops
           </h2>
-          <p className="mt-4 text-xl text-muted-foreground">
-            Deepen your practice with our specialized workshops
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Join our specialized workshops and retreats to deepen your practice and connect with like-minded individuals.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {workshops.map((workshop) => (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {workshops.map((workshop, index) => (
             <motion.div
-              key={workshop.id}
+              key={workshop.title}
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              onHoverStart={() => setHoveredId(workshop.id)}
-              onHoverEnd={() => setHoveredId(null)}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
               className={cn(
-                "group rounded-2xl border bg-card overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg",
-                workshop.featured && "md:col-span-2 md:row-span-2"
+                "group relative overflow-hidden rounded-2xl bg-background shadow-lg transition-all duration-300 hover:shadow-xl",
+                workshop.featured && "md:col-span-2 lg:col-span-3"
               )}
             >
-              <div className="relative overflow-hidden aspect-[16/9]">
+              <div className={cn(
+                "grid gap-8",
+                workshop.featured ? "md:grid-cols-2" : "flex flex-col"
+              )}>
+                <div className={cn(
+                  "relative overflow-hidden",
+                  workshop.featured ? "md:aspect-auto" : "aspect-video"
+                )}>
                 <img
                   src={workshop.image}
                   alt={workshop.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 {workshop.featured && (
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-primary text-primary-foreground">
-                      Featured
-                    </Badge>
+                    <div className="absolute top-4 left-4">
+                      <span className="rounded-full bg-primary px-3 py-1 text-sm font-medium text-white">
+                        Featured Event
+                      </span>
                   </div>
                 )}
               </div>
               
-              <div className="p-6">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {workshop.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="p-6 space-y-6">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">{workshop.title}</h3>
+                    <p className="text-muted-foreground">{workshop.description}</p>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-2">{workshop.title}</h3>
-                <p className="text-muted-foreground mb-6">{workshop.description}</p>
-                
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center text-sm">
-                    <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{workshop.date}</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{workshop.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{workshop.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{workshop.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{workshop.capacity}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{workshop.location}</span>
+
+                  <div>
+                    <h4 className="font-semibold mb-3">What's Included:</h4>
+                    <ul className="space-y-2">
+                      {workshop.features.map((feature) => (
+                        <li key={feature} className="flex items-center gap-2">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{workshop.spots}</span>
+
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl font-bold text-primary">
+                      {workshop.price}
+                    </div>
+                    <Button className="group/btn">
+                      Register Now
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                    </Button>
                   </div>
                 </div>
-                
-                <Button className="w-full group/btn">
-                  Reserve Your Spot
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-                </Button>
               </div>
             </motion.div>
           ))}

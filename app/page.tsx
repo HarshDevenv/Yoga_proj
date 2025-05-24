@@ -3,21 +3,19 @@ import { ServicesSection } from "@/components/sections/services/services-section
 import { ProgramsSection } from "@/components/sections/programs/programs-section";
 import { WorkshopsSection } from "@/components/sections/workshops/workshops-section";
 import { FAQSection } from "@/components/sections/faq/faq-section";
-import { TrainersSection } from "@/components/trainers-section";
-import { FitnessJourney } from "@/components/fitness-journey";
-import { FloatingActionMenu } from "@/components/floating-action-menu";
+import { TrainersSection } from "@/components/sections/trainers/trainers-section";
+import { ContactSection } from "@/components/sections/contact/contact-section";
 
 export default function Home() {
   return (
-    <>
-      <HeroSection />
-      <ServicesSection />
-      <ProgramsSection />
-      <WorkshopsSection />
-      <TrainersSection />
-      <FitnessJourney />
-      <FAQSection />
-      <FloatingActionMenu />
-    </>
+    <main className="flex flex-col w-full">
+      <section className="w-full min-h-screen"><HeroSection /></section>
+      <section className="w-full min-h-screen"><ServicesSection /></section>
+      <section className="w-full min-h-screen"><ProgramsSection /></section>
+      <section className="w-full min-h-screen"><WorkshopsSection /></section>
+      <section className="w-full min-h-screen"><TrainersSection /></section>
+      <section className="w-full min-h-screen"><FAQSection /></section>
+      <section className="w-full min-h-screen"><ContactSection /></section>
+    </main>
   );
 }

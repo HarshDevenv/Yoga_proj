@@ -2,15 +2,15 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
+import { HeaderSection } from '@/components/sections/header/header-section';
+import { FooterSection } from '@/components/sections/footer/footer-section';
 import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'YogaFlex | Premium Fitness & Wellness',
-  description: 'Transform your body and mind with our premium fitness and wellness programs',
+  title: 'Yoga Studio | Transform Your Life Through Yoga',
+  description: 'Join our community and start your journey to wellness through yoga practice',
 };
 
 export default function RootLayout({
@@ -28,9 +28,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <HeaderSection />
+            {children}
+            <FooterSection />
           </div>
           <Toaster />
         </ThemeProvider>

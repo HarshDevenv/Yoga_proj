@@ -2,133 +2,139 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Clock, Target, Users, ArrowRight } from "lucide-react";
+import { Play, Clock, Target, Users, ArrowRight, Award, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 const programs = [
   {
-    id: 1,
-    title: "Power Yoga",
-    description: "Build strength and flexibility through dynamic yoga sequences",
-    duration: "60 mins",
-    level: "All Levels",
-    capacity: "15 students",
-    image: "https://images.pexels.com/photos/8436741/pexels-photo-8436741.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    color: "from-purple-500 to-pink-500",
-  },
-  {
-    id: 2,
-    title: "Meditation",
-    description: "Find inner peace and mental clarity through guided meditation",
-    duration: "45 mins",
+    title: "Beginner's Journey",
+    description: "Perfect for those new to yoga. Learn fundamental poses and breathing techniques in a supportive environment.",
     level: "Beginner",
-    capacity: "20 students",
-    image: "https://images.pexels.com/photos/8436620/pexels-photo-8436620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    color: "from-blue-500 to-teal-500",
+    duration: "60 min",
+    schedule: "Mon, Wed, Fri - 9:00 AM",
+    benefits: [
+      "Build strong foundation",
+      "Learn proper alignment",
+      "Develop breathing awareness",
+      "Gain confidence in practice"
+    ],
+    image: "https://images.pexels.com/photos/3822621/pexels-photo-3822621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
   },
   {
-    id: 3,
-    title: "Ashtanga Yoga",
-    description: "Master traditional Ashtanga sequences with expert guidance",
-    duration: "90 mins",
+    title: "Intermediate Flow",
+    description: "Take your practice to the next level with more challenging sequences and advanced techniques.",
+    level: "Intermediate",
+    duration: "75 min",
+    schedule: "Tue, Thu - 10:30 AM",
+    benefits: [
+      "Deepen your practice",
+      "Master complex poses",
+      "Enhance flexibility",
+      "Build core strength"
+    ],
+    image: "https://images.pexels.com/photos/3822626/pexels-photo-3822626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+  },
+  {
+    title: "Advanced Mastery",
+    description: "For experienced practitioners seeking to refine their skills and explore advanced techniques.",
     level: "Advanced",
-    capacity: "12 students",
-    image: "https://images.pexels.com/photos/8436727/pexels-photo-8436727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    color: "from-amber-500 to-red-500",
-  },
-  {
-    id: 4,
-    title: "Prenatal Yoga",
-    description: "Safe and nurturing yoga practice designed for expectant mothers",
-    duration: "60 mins",
-    level: "All Levels",
-    capacity: "10 students",
-    image: "https://images.pexels.com/photos/8436457/pexels-photo-8436457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    color: "from-green-500 to-emerald-500",
+    duration: "90 min",
+    schedule: "Mon, Wed, Fri - 6:00 PM",
+    benefits: [
+      "Perfect advanced poses",
+      "Explore inversions",
+      "Deep meditation practice",
+      "Personal guidance"
+    ],
+    image: "https://images.pexels.com/photos/3822628/pexels-photo-3822628.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
   }
 ];
 
 export function ProgramsSection() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   return (
-    <section className="bg-muted/30 py-24">
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
+          ref={ref}
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            Specialized Programs
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+            Our Programs
           </h2>
-          <p className="mt-4 text-xl text-muted-foreground">
-            Transform your practice with our expert-led programs
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Structured programs designed to guide you through your yoga journey, from beginner to advanced levels.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {programs.map((program) => (
+        <div className="grid gap-12">
+          {programs.map((program, index) => (
             <motion.div
-              key={program.id}
+              key={program.title}
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              onHoverStart={() => setHoveredId(program.id)}
-              onHoverEnd={() => setHoveredId(null)}
-              className="relative group"
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="grid gap-8 md:grid-cols-2 items-center"
             >
-              <div className="relative overflow-hidden rounded-2xl">
-                <div className="absolute inset-0 bg-gradient-to-r z-10 opacity-90 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{ backgroundImage: `linear-gradient(to right, ${program.color})` }}
-                ></div>
+              <div className={`order-2 md:order-${index % 2 === 0 ? '1' : '2'}`}>
+                <div className="aspect-video overflow-hidden rounded-2xl">
                 <img
                   src={program.image}
                   alt={program.title}
-                  className="w-full h-[400px] object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                 />
-                <div className="absolute inset-0 z-20 p-8 flex flex-col justify-between text-white">
+                </div>
+              </div>
+              
+              <div className={`order-1 md:order-${index % 2 === 0 ? '2' : '1'}`}>
+                <div className="space-y-6">
                   <div>
-                    <h3 className="text-2xl font-bold mb-3">{program.title}</h3>
-                    <p className="text-white/90 mb-6">{program.description}</p>
-                    <div className="space-y-3">
-                      <div className="flex items-center">
-                        <Clock className="h-5 w-5 mr-2" />
-                        <span>{program.duration}</span>
+                    <h3 className="text-2xl font-bold mb-2">{program.title}</h3>
+                    <p className="text-muted-foreground">{program.description}</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Award className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{program.level}</span>
                       </div>
-                      <div className="flex items-center">
-                        <Target className="h-5 w-5 mr-2" />
-                        <span>{program.level}</span>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{program.duration}</span>
                       </div>
-                      <div className="flex items-center">
-                        <Users className="h-5 w-5 mr-2" />
-                        <span>{program.capacity}</span>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-primary" />
+                      <span className="text-sm">{program.schedule}</span>
                       </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-primary" />
+                      <span className="text-sm">Small Groups</span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      Watch Preview
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white/10 border-white/20 text-white hover:bg-white/20 group/btn"
-                    >
-                      Learn More
-                      <ArrowRight className="h-4 w-4 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
-                    </Button>
+                  <div>
+                    <h4 className="font-semibold mb-3">Key Benefits:</h4>
+                    <ul className="space-y-2">
+                      {program.benefits.map((benefit) => (
+                        <li key={benefit} className="flex items-center gap-2">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                          <span className="text-sm">{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
+
+                  <Button className="w-full sm:w-auto">
+                    Join Program
+                  </Button>
                 </div>
               </div>
             </motion.div>

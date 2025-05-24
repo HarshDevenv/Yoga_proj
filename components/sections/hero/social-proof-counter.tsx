@@ -1,137 +1,55 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Users, Star, Award } from 'lucide-react';
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 const stats = [
   { 
-    id: 1, 
-    icon: Users, 
-    label: 'Members', 
-    startValue: 0, 
-    endValue: 5000, 
-    prefix: '+' 
+    value: "10K+",
+    label: "Active Members",
+    description: "Join our growing community",
   },
   { 
-    id: 2, 
-    icon: Star, 
-    label: 'Reviews', 
-    startValue: 0, 
-    endValue: 4.8, 
-    suffix: '/5' 
+    value: "50+",
+    label: "Expert Instructors",
+    description: "Learn from the best",
   },
   { 
-    id: 3, 
-    icon: Award, 
-    label: 'Expert Trainers', 
-    startValue: 0, 
-    endValue: 25, 
-    prefix: '' 
+    value: "100+",
+    label: "Classes Weekly",
+    description: "Find your perfect fit",
   },
 ];
 
 export function SocialProofCounter() {
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const element = document.getElementById('social-proof-section');
-    if (element) observer.observe(element);
-
-    return () => observer.disconnect();
-  }, []);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   return (
-    <div id="social-proof-section" className="flex flex-wrap justify-center gap-8 md:gap-16">
-      {stats.map((stat) => (
+    <div ref={ref} className="grid gap-8 sm:grid-cols-3">
+      {stats.map((stat, index) => (
         <motion.div
-          key={stat.id}
+          key={stat.label}
           initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.1 * stat.id }}
-          className="flex flex-col items-center"
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          className="text-center"
         >
-          <div className="mb-2 rounded-full bg-white/10 p-3 backdrop-blur-sm">
-            <stat.icon className="h-6 w-6 text-white" />
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center">
-              <CounterAnimation
-                inView={inView}
-                startValue={stat.startValue}
-                endValue={stat.endValue}
-                duration={2}
-                prefix={stat.prefix || ''}
-                suffix={stat.suffix || ''}
-              />
-            </div>
-            <p className="text-sm text-white/70">{stat.label}</p>
+          <motion.div
+            initial={{ scale: 0.5 }}
+            animate={isInView ? { scale: 1 } : { scale: 0.5 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="text-3xl font-bold text-primary"
+          >
+            {stat.value}
+          </motion.div>
+          <div className="mt-2 text-sm font-medium">{stat.label}</div>
+          <div className="mt-1 text-xs text-muted-foreground">
+            {stat.description}
           </div>
         </motion.div>
       ))}
     </div>
-  );
-}
-
-interface CounterAnimationProps {
-  inView: boolean;
-  startValue: number;
-  endValue: number;
-  duration: number;
-  prefix?: string;
-  suffix?: string;
-}
-
-function CounterAnimation({
-  inView,
-  startValue,
-  endValue,
-  duration,
-  prefix = '',
-  suffix = '',
-}: CounterAnimationProps) {
-  const [count, setCount] = useState(startValue);
-  const isDecimal = Number.isInteger(endValue) === false;
-
-  useEffect(() => {
-    if (!inView) return;
-
-    let startTime: number;
-    let animationFrame: number;
-
-    const updateCount = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
-      
-      const currentCount = startValue + progress * (endValue - startValue);
-      
-      setCount(isDecimal ? parseFloat(currentCount.toFixed(1)) : Math.floor(currentCount));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(updateCount);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(updateCount);
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, [inView, startValue, endValue, duration, isDecimal]);
-
-  return (
-    <h3 className="text-2xl font-bold text-white">
-      {prefix}
-      {count}
-      {suffix}
-    </h3>
   );
 }
