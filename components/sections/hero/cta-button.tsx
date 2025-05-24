@@ -44,7 +44,7 @@ export function CTAButton() {
         onClick={handleClick}
         variant="outline"
         className={cn(
-          "group relative overflow-hidden px-8 py-6 text-lg font-semibold text-primary dark:text-white border-2 border-primary dark:border-white bg-transparent shadow-none transition-all duration-300 hover:border-blue-600 dark:hover:border-blue-400 focus:ring-0 focus:outline-none",
+          "group relative overflow-hidden px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 text-base sm:text-lg font-semibold text-primary dark:text-white border-2 border-primary dark:border-white bg-transparent shadow-none transition-all duration-300 hover:border-blue-600 dark:hover:border-blue-400 focus:ring-0 focus:outline-none",
           complete && "text-green-600 dark:text-green-400 border-green-600 dark:border-green-400 hover:border-green-700 dark:hover:border-green-500"
         )}
         size="lg"
@@ -59,7 +59,7 @@ export function CTAButton() {
               transition={{ duration: 0.2 }}
               className="flex items-center"
             >
-              <Check className="mr-2 h-5 w-5" />
+              <Check className="mr-2 h-4 sm:h-5 w-4 sm:w-5" />
               <span>Booked Successfully!</span>
             </motion.div>
           ) : (
@@ -72,7 +72,7 @@ export function CTAButton() {
               className="flex items-center"
             >
               <span>{steps[currentStep - 1].text}</span>
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="ml-2 h-4 sm:h-5 w-4 sm:w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </motion.div>
           )}
         </span>
